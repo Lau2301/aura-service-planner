@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Service Planner – an AURA concept by Laura Phillips</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#16243e;--blue:#0099ff;--sky:#e6f5ff;--grey:#f5f5f7;--slate:#6c7788;--line:#e6e8ec;--red:#f05058;--orange:#ee7948;--yellow:#f2c94c;--green:#22b07d}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:Inter,sans-serif;background:var(--grey);color:var(--navy);font-size:14px}
+  h1,h2,h3,h4{font-family:Jost,sans-serif}
+  button{font:inherit;color:inherit}
+  .banner{background:var(--navy);color:#cfd6e2;font-size:12px;text-align:center;padding:8px}
+  .banner b{color:#fff}
+  .banner button{background:none;border:none;color:#7cc8ff;text-decoration:underline;cursor:pointer;font-size:12px;margin-left:6px}
+  .app{display:flex;min-height:calc(100vh - 33px)}
+  nav{width:210px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;flex-shrink:0}
+  .brand{font-family:Jost;font-weight:700;font-size:20px;letter-spacing:.5px}
+  .brand span{color:var(--blue)}
+  .brand small{display:block;font-family:Inter;font-weight:500;font-size:11px;color:var(--slate);letter-spacing:0;margin-top:2px}
+  nav ul{list-style:none;padding:0;margin-top:28px}
+  nav li{padding:10px 12px;border-radius:10px;color:#b0b6c0;margin-bottom:4px;font-weight:500}
+  nav li.on{background:var(--sky);color:var(--navy);font-weight:600}
+  main{flex:1;padding:28px 32px;min-width:0}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;gap:16px}
+  .top h1{font-size:30px;font-weight:600}
+  .top p{color:var(--slate);margin-top:4px}
+  .agent{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-size:13px;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+  .stat{background:#fff;border-radius:16px;padding:16px 18px;border:1px solid var(--line)}
+  .stat .n{font-family:Jost;font-size:28px;font-weight:600}
+  .stat .l{color:var(--slate);font-size:12px;margin-top:2px}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+  .card{background:#fff;border-radius:18px;border:1px solid var(--line);padding:18px}
+  .card h2{font-size:17px;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:baseline}
+  .card h2 small{font-family:Inter;font-weight:500;font-size:12px;color:var(--slate)}
+  .item{display:flex;gap:12px;padding:12px;border-radius:12px;margin-bottom:6px;border:1px solid transparent;cursor:pointer;width:100%;background:none;text-align:left}
+  .item:hover{background:var(--grey)}
+  .item.on{background:var(--sky);border-color:#b8e1ff}
+  .item.done{opacity:.55}
+  .bar{width:4px;border-radius:4px;flex-shrink:0}
+  .item .t{font-weight:600}
+  .item .s{color:var(--slate);font-size:12px;margin-top:3px}
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;margin-left:auto;align-self:flex-start;white-space:nowrap}
+  .p-red{background:#fde7e8;color:#c22a33}.p-or{background:#fdeee6;color:#b8501f}.p-ye{background:#fdf6dd;color:#8a6a10}
+  .p-ok{background:#e3f6ee;color:#16784f}.p-no{background:#eceef1;color:#545d6b}
+  .dh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}
+  .dh h3{font-size:22px;font-weight:600}
+  .dh p{color:var(--slate);margin-top:2px}
+  .box{background:var(--grey);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+  .lab{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--slate);margin-bottom:8px}
+  .box p{line-height:1.55}
+  .ev{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+  .evc{border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .evc .k{font-size:12px;color:var(--slate)}
+  .evc .v{font-family:Jost;font-size:22px;font-weight:600;margin-top:2px}
+  .meter{height:6px;background:var(--line);border-radius:6px;margin-top:8px;overflow:hidden}
+  .meter i{display:block;height:100%;border-radius:6px}
+  .chk{font-size:11px;color:var(--green);font-weight:600;margin-top:6px}
+  .tags{display:flex;gap:8px;flex-wrap:wrap}
+  .tag{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px}
+  .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{font-family:Jost;font-weight:600;font-size:15px;border:none;border-radius:999px;padding:11px 22px;cursor:pointer;white-space:nowrap}
+  .primary{background:var(--blue);color:#fff}
+  .primary:hover{background:#0085e0}
+  .ghost{background:#fff;border:1px solid var(--line)}
+  .ghost:hover{background:var(--grey)}
+  .link{background:none;border:none;color:var(--blue);font-weight:600;cursor:pointer;padding:0;font-size:14px}
+  .note{font-size:12px;color:var(--slate)}
+  .status{padding:12px 16px;border-radius:14px;font-weight:500}
+  /* pop-up */
+  .overlay{position:fixed;inset:0;background:rgba(22,36,62,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:22px;max-width:620px;width:100%;max-height:88vh;overflow:auto;padding:26px 28px;position:relative;box-shadow:0 20px 60px rgba(22,36,62,.25)}
+  .modal h3{font-size:22px;font-weight:600;margin-bottom:4px;padding-right:30px}
+  .modal .sub{color:var(--slate);margin-bottom:18px}
+  .x{position:absolute;top:18px;right:18px;background:var(--grey);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px}
+  .steps{list-style:none;padding:0;margin-bottom:18px}
+  .steps>li{display:flex;gap:14px;padding-bottom:16px;position:relative}
+  .steps>li:not(:last-child)::before{content:"";position:absolute;left:13px;top:30px;bottom:2px;width:2px;background:var(--line)}
+  .num{width:28px;height:28px;border-radius:50%;background:var(--sky);color:var(--blue);font-family:Jost;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .steps h4{font-size:15px;font-weight:600;margin-bottom:3px}
+  .steps p,.steps ul{color:#3b4659;line-height:1.5;font-size:13.5px}
+  .steps ul{padding-left:18px}
+  .guard{background:#fff8ec;border:1px solid #f7e2bb;border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.5}
+  .todo{list-style:none;padding:0;margin-bottom:16px}
+  .todo li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+  .tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;transition:all .3s}
+  .tick.on{background:var(--green);border-color:var(--green)}
+  .mail{background:var(--grey);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.55;white-space:pre-line;margin-bottom:16px}
+  .reasons{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .reasons label{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px 14px;cursor:pointer}
+  .reasons label:has(input:checked){border-color:var(--blue);background:var(--sky)}
+  textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;min-height:70px;margin-bottom:14px}
+  /* menu + pages */
+  nav li.soon{color:#b0b6c0}
+  nav li button{width:100%;text-align:left;background:none;border:none;padding:10px 12px;border-radius:10px;color:var(--slate);font-weight:500;cursor:pointer}
+  nav li{padding:0}
+  nav li.soon{padding:10px 12px}
+  nav li button:hover{background:var(--grey)}
+  nav li button.on{background:var(--sky);color:var(--navy);font-weight:600}
+  nav .sep{border-top:1px solid var(--line);margin:12px 0}
+  .view{display:none}.view.on{display:block}
+  /* try the agent */
+  .sim{display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:500}
+  .chip:hover{border-color:var(--blue)}
+  .ctl{margin-bottom:16px}
+  .ctl label{display:flex;justify-content:space-between;font-weight:500;margin-bottom:6px}
+  .ctl label span{font-family:Jost;font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--blue)}
+  .toggle{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:500}
+  .verdict{border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .verdict .big{font-family:Jost;font-size:26px;font-weight:600}
+  .v-red{background:#fde7e8;color:#8f1d24}.v-or{background:#fdeee6;color:#8a3b14}.v-ye{background:#fdf6dd;color:#6b520b}.v-bl{background:var(--sky);color:#0a4f80}.v-gr{background:#e3f6ee;color:#11603f}
+  .sig{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .sig .evc.hot{border-color:var(--red);background:#fffafa}
+  .rules{list-style:none;padding:0;font-size:13px}
+  .rules li{padding:7px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+  .rules li.off{color:#a3aab5}
+  .rules code{font-size:12px;background:var(--grey);padding:1px 6px;border-radius:6px}
+  /* product thinking */
+  .doc{max-width:860px}
+  .doc .card{margin-bottom:16px;padding:22px 24px}
+  .doc h2{font-size:19px;margin-bottom:10px;display:block}
+  .doc p,.doc li{line-height:1.6;color:#2c374a}
+  .doc ul{padding-left:20px}
+  .doc li{margin-bottom:4px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--slate);padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+  .phase{border-left:3px solid var(--blue);padding:4px 0 4px 14px;margin-bottom:12px}
+  .phase b{font-family:Jost;font-size:15px}
+  @media (max-width:900px){.sim,.cols{grid-template-columns:1fr}.sig{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:900px){.app{flex-direction:column}nav{width:auto;padding:10px 12px;border-right:none;border-bottom:1px solid var(--line)}nav .brand,nav .sep,nav li.soon{display:none}nav ul{display:flex;gap:4px;margin:0;overflow-x:auto}nav li button{white-space:nowrap}.top{flex-direction:column;align-items:flex-start}.top h1{font-size:26px}.agent{white-space:normal}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.ev{grid-template-columns:1fr}main{padding:20px}}
+</style>
+</head>
+<body>
+<div class="banner"><b>AURA concept by Laura Phillips</b> · made-up data · no live AI model · not affiliated with Aquablu <button id="aboutBtn">About this concept</button></div>
+<div class="app">
+  <nav>
+    <div class="brand">AURA<span>.</span><small>concept</small></div>
+    <ul>
+      <li><button class="on" data-view="planner">Service Planner</button></li>
+      <li><button data-view="sim">Try the agent</button></li>
+      <li><button data-view="product">Product thinking</button></li>
+      <li class="sep"></li>
+      <li class="soon">Fleet</li>
+      <li class="soon">Customers</li>
+      <li class="soon">Reports</li>
+    </ul>
+  </nav>
+  <main>
+   <section class="view on" id="view-planner">
+    <div class="top">
+      <div><h1>Service Planner</h1><p>Week 45 · Region Randstad · Technician: Sam de Vries</p></div>
+      <div class="agent"><span class="dot"></span>Planning agent checked 42 taps · 07:00</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">42</div><div class="l">Connected taps in region</div></div>
+      <div class="stat"><div class="n" id="statSuggested">6</div><div class="l">Visits suggested this week</div></div>
+      <div class="stat"><div class="n" id="statReviewed">0 / 6</div><div class="l">Reviewed by technician</div></div>
+      <div class="stat"><div class="n" id="statAgree">–</div><div class="l">Agent suggestions accepted</div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Suggested visits <small>sorted by urgency</small></h2>
+        <div id="list"></div>
+      </div>
+      <div class="card" id="detail"></div>
+    </div>
+   </section>
+
+   <section class="view" id="view-sim">
+    <div class="top">
+      <div><h1>Try the agent</h1><p>Change one tap's live data and watch the planning agent decide, using real rules, not pre-written text.</p></div>
+    </div>
+    <div class="presets">
+      <button class="chip" data-preset="urgent">Filter almost empty</button>
+      <button class="chip" data-preset="errors">Repeated errors</button>
+      <button class="chip" data-preset="combine">Low flavour, technician nearby</button>
+      <button class="chip" data-preset="fine">Everything fine</button>
+    </div>
+    <div class="sim">
+      <div class="card">
+        <h2>Tap data <small>Refill+ S2 · test tap</small></h2>
+        <div class="ctl"><label for="sFilter">Filter life <span id="oFilter"></span></label><input type="range" id="sFilter" min="0" max="100"></div>
+        <div class="ctl"><label for="sLitres">Litres per day <span id="oLitres"></span></label><input type="range" id="sLitres" min="40" max="600" step="10"></div>
+        <div class="ctl"><label for="sFlavour">Flavour level (lowest) <span id="oFlavour"></span></label><input type="range" id="sFlavour" min="0" max="100"></div>
+        <div class="ctl"><label for="sCo2">CO₂ cylinder <span id="oCo2"></span></label><input type="range" id="sCo2" min="0" max="100"></div>
+        <div class="ctl"><label for="sErrors">Error alerts in last 48h <span id="oErrors"></span></label><input type="range" id="sErrors" min="0" max="5"></div>
+        <label class="toggle"><input type="checkbox" id="sNearby"> A technician is already in this area this week</label>
+      </div>
+      <div>
+        <div class="verdict" id="verdict"></div>
+        <div class="sig" id="signals"></div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="lab">Why</div><p id="simWhy" style="line-height:1.6;margin-bottom:12px"></p>
+          <div class="lab">What it ruled out</div><p id="simRuled" style="line-height:1.6;margin-bottom:12px"></p>
+          <div class="lab">Bring</div><div class="tags" id="simBring"></div>
+        </div>
+        <div class="card">
+          <div class="lab">Rules the agent checked (✓ = fired)</div>
+          <ul class="rules" id="simRules"></ul>
+          <p class="note" style="margin-top:12px">These are simple, readable rules, so every decision can be traced and tested. In AURA, a language model would write the explanation and the customer message, while rules like these keep the decision itself checkable.</p>
+        </div>
+      </div>
+    </div>
+   </section>
+
+   <section class="view" id="view-product">
+    <div class="top">
+      <div><h1>Product thinking</h1><p>Why I'd build this, how I'd know it worked, and what I'd leave out.</p></div>
+    </div>
+    <div class="doc">
+      <div class="card">
+        <h2>The problem (my assumption, to test with the service team)</h2>
+        <p>Taps report filter life, flavour and CO₂ levels and errors, but service is probably still planned on fixed cycles or after a customer complains. That means two kinds of waste: trips to taps that didn't need a visit yet, and taps that run empty before the next visit. Customers notice the second one.</p>
+      </div>
+
+      <div class="card">
+        <h2>Why this first</h2>
+        <table>
+          <tr><th>Idea</th><th>Value</th><th>Decision</th></tr>
+          <tr><td><b>Service Planner</b>: agent suggests visits from tap data</td><td>Cuts driving and prevents empty taps. The data already exists, and it's easy to measure.</td><td><b>Build first</b></td></tr>
+          <tr><td>Renewal early-warning for account managers</td><td>Protects renewals, but the renewal rate is already high and the effect takes months to show.</td><td>Later</td></tr>
+          <tr><td>Auto-generated sustainability reports</td><td>Nice for customers, but they already see impact data today.</td><td>Not now</td></tr>
+        </table>
+      </div>
+
+      <div class="cols">
+        <div class="card">
+          <h2>How I'd know it worked</h2>
+          <ul>
+            <li><b>Taps running empty</b> before a visit: down 50%</li>
+            <li><b>Kilometres driven per visit</b>: down 20%</li>
+            <li><b>Emergency call-outs</b>: down</li>
+            <li><b>Agent accepted by technicians</b>: 80% or more, with every rejection reason reviewed weekly</li>
+            <li><i>Guardrail:</i> customer complaints about service must not go up</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>What I would not build (yet)</h2>
+          <ul>
+            <li><b>Auto-sending customer messages.</b> The agent drafts and a person sends, until trust is earned.</li>
+            <li><b>Full route optimisation</b> across all technicians. It's a big build, and it only pays off once suggestions are trusted.</li>
+            <li><b>A chat interface.</b> Technicians need a clear list, not a conversation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rollout</h2>
+        <div class="phase"><b>1. Shadow mode (2 weeks):</b> the agent suggests, technicians plan as usual, and we compare the two. That tells us how often it would have been right, at no risk.</div>
+        <div class="phase"><b>2. One region:</b> technicians accept or reject suggestions. We track the metrics above and fix the top rejection reasons.</div>
+        <div class="phase"><b>3. All regions:</b> only once acceptance holds above 80% and complaints are flat.</div>
+      </div>
+
+      <div class="card">
+        <h2>Questions I'd ask technicians in week one</h2>
+        <ul>
+          <li>How do you plan your week today, and what makes you change the plan?</li>
+          <li>What's the most annoying wasted trip you made last month?</li>
+          <li>Which tap readings do you trust, and which ones are often wrong?</li>
+          <li>What would make you ignore a suggestion from the agent?</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Why the agent shows its working</h2>
+        <p>My MSc thesis audited an AI model that screened startup founders. Its explanations sounded reasonable and almost never mentioned gender, yet its shortlists still held fewer women than the pools they came from. The lesson I took: an AI's explanation alone isn't proof. So here every suggestion links to the data behind it, every rejection is logged, and success is measured on outcomes, not on how convincing the agent sounds.</p>
+      </div>
+    </div>
+   </section>
+  </main>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const visits = [
+  {
+    id: 1, name: "Office tower, floor 3", city: "Amsterdam Zuid", urgency: "red", label: "Urgent", when: "Monday 09:30",
+    short: "filter 3% left", meta: "Refill+ S2 · 410 L/day · last visit 84 days ago",
+    why: "The filter has 3% life left. At the current 410 litres a day it runs out in about 2 days. Usage went up 30% after their new floor opened, so the usual 90-day cycle is too slow for this site.",
+    evidence: [
+      { k: "Filter life", v: "3%", meter: 3, color: "red", check: "matches tap data" },
+      { k: "Litres per day (30d)", v: "410", trend: "+30%", spark: "0,20 15,19 30,21 45,18 60,12 75,9 90,8 105,7 120,6", check: "matches tap data" },
+      { k: "Days until empty", v: "~2", meter: 8, color: "orange", check: "calculation shown" }
+    ],
+    bring: ["1× filter cartridge", "2× Thrive pods (8% left)", "Est. 25 min on site"],
+    noticed: "On 30 Oct at 06:12 the tap reported filter life below 10%.",
+    checked: ["Filter life trend over the last 30 days", "Daily litres compared with the 90 days before", "Date of the last service visit", "Other low stock on the same tap, so one trip covers everything"],
+    decided: "Visit on Monday. I also looked at waiting for the regular visit on 14 Nov, but the filter would run out about 12 days before then.",
+    willDo: ["Book Monday 09:30 in Sam's calendar", "Reserve 1 filter and 2 Thrive pods from Amsterdam stock", "Draft a heads-up message to the facility manager"],
+    contact: "Femke (facility manager)",
+    mail: "Hi Femke,\n\nYour water tap on floor 3 needs a new filter. Sam from our service team will drop by on Monday at 09:30. It takes about 25 minutes and the tap stays usable for most of that time.\n\nDuring the same visit, Sam will also top up the Thrive flavour.\n\nBest,\nAquablu Service"
+  },
+  {
+    id: 2, name: "Hotel lobby bar", city: "Utrecht", urgency: "orange", label: "This week", when: "Tuesday 11:00",
+    short: "error E12 twice in 48h", meta: "Refill+ S2 · 180 L/day · last visit 41 days ago",
+    why: "The tap reported error E12 (sparkling pressure low) twice in 48 hours. It reset itself both times, but taps with repeat E12 errors usually stop serving sparkling water within a week. The hotel's busiest days are Thursday and Friday.",
+    evidence: [
+      { k: "E12 errors (48h)", v: "2", meter: 60, color: "orange", check: "matches tap logs" },
+      { k: "Sparkling share of drinks", v: "46%", meter: 46, color: "blue", check: "matches tap data" },
+      { k: "Self-resets", v: "2 / 2", meter: 100, color: "green", check: "matches tap logs" }
+    ],
+    bring: ["1× CO₂ pressure valve", "Diagnostic kit", "Est. 40 min on site"],
+    noticed: "On 29 and 30 Oct the tap logged error E12 (sparkling pressure low).",
+    checked: ["Error history for this tap over 6 months", "How often a repeat E12 led to a breakdown on other taps", "The hotel's busiest days, from usage data", "Valve stock at the Utrecht depot"],
+    decided: "Visit on Tuesday, before the busy weekend. I also looked at waiting for a third error, but if sparkling water fails, almost half of the drinks served here are affected.",
+    willDo: ["Book Tuesday 11:00 in Sam's calendar", "Reserve 1 CO₂ pressure valve from Utrecht stock", "Draft a heads-up message to the F&B manager"],
+    contact: "Joost (F&B manager)",
+    mail: "Hi Joost,\n\nYour lobby bar tap has flagged a small sparkling-pressure issue twice this week. It's still working, but we'd like to fix it before your busy weekend.\n\nSam will come by on Tuesday at 11:00 (about 40 minutes).\n\nBest,\nAquablu Service"
+  },
+  {
+    id: 3, name: "Co-working, ground floor", city: "Amsterdam West", urgency: "orange", label: "This week", when: "Monday 13:00",
+    short: "CO₂ cylinder 9%", meta: "Refill+ S2 · 260 L/day · last visit 52 days ago",
+    why: "The CO₂ cylinder is at 9%. At this rate sparkling water runs out in about 4 days. The site is 15 minutes from Monday's urgent visit, so it fits on the same route.",
+    evidence: [
+      { k: "CO₂ cylinder", v: "9%", meter: 9, color: "orange", check: "matches tap data" },
+      { k: "Days until empty", v: "~4", meter: 20, color: "orange", check: "calculation shown" },
+      { k: "Distance to Monday visit", v: "15 min", meter: 30, color: "blue", check: "from route planner" }
+    ],
+    bring: ["1× CO₂ cylinder", "Est. 15 min on site"],
+    noticed: "On 31 Oct the tap reported the CO₂ cylinder below 10%.",
+    checked: ["CO₂ use per day", "Visits already planned nearby this week", "Cylinder stock at the Amsterdam depot"],
+    decided: "Add it to Monday's route after the office tower. I also looked at a separate trip on Thursday, but that adds about 50 minutes of driving.",
+    willDo: ["Add a Monday 13:00 stop to Sam's route", "Reserve 1 CO₂ cylinder from Amsterdam stock", "Draft a heads-up message to the community manager"],
+    contact: "Ilse (community manager)",
+    mail: "Hi Ilse,\n\nQuick heads-up: we'll swap the CO₂ cylinder on your tap on Monday around 13:00 so the sparkling water keeps flowing. It takes about 15 minutes.\n\nBest,\nAquablu Service"
+  },
+  {
+    id: 4, name: "Law firm, floor 6", city: "Rotterdam", urgency: "yellow", label: "Combine", when: "Wednesday 10:00",
+    short: "Thrive flavour 12%", meta: "Refill+ S2 · 140 L/day · last visit 63 days ago",
+    why: "Thrive flavour is at 12% and will run out in about 9 days. On its own it isn't urgent, but Sam is in Rotterdam on Wednesday anyway, so a 10-minute stop saves a separate trip next week.",
+    evidence: [
+      { k: "Thrive flavour", v: "12%", meter: 12, color: "yellow", check: "matches tap data" },
+      { k: "Days until empty", v: "~9", meter: 45, color: "yellow", check: "calculation shown" },
+      { k: "Other jobs in Rotterdam", v: "1", meter: 50, color: "blue", check: "from route planner" }
+    ],
+    bring: ["3× Thrive pods", "Est. 10 min on site"],
+    noticed: "On 30 Oct the Thrive flavour level fell below 15%.",
+    checked: ["Flavour use per day", "Other jobs in Rotterdam this week", "Pod stock in Sam's van"],
+    decided: "Combine it with Wednesday's Rotterdam trip. I also looked at doing it next week, but that would mean a separate 1-hour round trip.",
+    willDo: ["Add a Wednesday 10:00 stop to Sam's route", "Note 3 Thrive pods to take from van stock", "Draft a heads-up message to the office manager"],
+    contact: "Mila (office manager)",
+    mail: "Hi Mila,\n\nWe'll be in the area on Wednesday, so Sam will top up your Thrive flavour around 10:00. It takes about 10 minutes.\n\nBest,\nAquablu Service"
+  },
+  {
+    id: 5, name: "University canteen", city: "Delft", urgency: "yellow", label: "Combine", when: "Wednesday 14:00",
+    short: "Glow flavour 15%", meta: "Refill+ S2 · 520 L/day · last visit 30 days ago",
+    why: "Glow flavour is at 15%. The canteen is the busiest tap in the region, and students mostly drink Glow, so it will run out in about 5 days. Delft is on the way back from Rotterdam on Wednesday.",
+    evidence: [
+      { k: "Glow flavour", v: "15%", meter: 15, color: "yellow", check: "matches tap data" },
+      { k: "Glow share of flavours", v: "58%", meter: 58, color: "blue", check: "matches tap data" },
+      { k: "Days until empty", v: "~5", meter: 25, color: "yellow", check: "calculation shown" }
+    ],
+    bring: ["4× Glow pods", "Est. 10 min on site"],
+    noticed: "On 31 Oct the Glow flavour level fell below 20%.",
+    checked: ["Flavour mix at this site", "Lecture calendar (exam week starts 4 Nov)", "Route from Rotterdam back to Amsterdam"],
+    decided: "Stop on the way back on Wednesday. I also looked at Friday, but exam week means the canteen will be busier than usual.",
+    willDo: ["Add a Wednesday 14:00 stop to Sam's route", "Note 4 Glow pods to take from van stock", "Draft a heads-up message to the canteen manager"],
+    contact: "Ravi (canteen manager)",
+    mail: "Hi Ravi,\n\nWith exam week coming up, Sam will top up the Glow flavour on Wednesday around 14:00 so it doesn't run out. It takes about 10 minutes.\n\nBest,\nAquablu Service"
+  },
+  {
+    id: 6, name: "Hotel banquet hall", city: "Leiden", urgency: "yellow", label: "Combine", when: "Wednesday 16:00",
+    short: "yearly check due", meta: "Refill+ S2 · 90 L/day · last visit 11 months ago",
+    why: "The yearly hygiene check is due within 4 weeks. Nothing is wrong right now, but Leiden is on Wednesday's route and the hall has no events booked that afternoon.",
+    evidence: [
+      { k: "Days until check due", v: "26", meter: 30, color: "yellow", check: "from service contract" },
+      { k: "Open errors", v: "0", meter: 0, color: "green", check: "matches tap logs" },
+      { k: "Events Wed afternoon", v: "None", meter: 0, color: "green", check: "from hotel calendar" }
+    ],
+    bring: ["Hygiene check kit", "Est. 45 min on site"],
+    noticed: "The yearly hygiene check comes due within 30 days.",
+    checked: ["Service contract dates", "The hotel's shared events calendar", "Wednesday's route and remaining time"],
+    decided: "Do it on Wednesday while Sam is nearby. I also looked at a dedicated visit in 3 weeks, but that adds about 1.5 hours of driving.",
+    willDo: ["Add a Wednesday 16:00 stop to Sam's route", "Log the check against the service contract", "Draft a heads-up message to the banquet manager"],
+    contact: "Anouk (banquet manager)",
+    mail: "Hi Anouk,\n\nYour yearly water hygiene check is coming up. Sam can do it on Wednesday at 16:00, when the hall is free. It takes about 45 minutes.\n\nIf that doesn't suit, just reply and we'll find another time.\n\nBest,\nAquablu Service"
+  }
+];
+
+const pillClass = { red: "p-red", orange: "p-or", yellow: "p-ye" };
+const colorVar = { red: "var(--red)", orange: "var(--orange)", yellow: "var(--yellow)", green: "var(--green)", blue: "var(--blue)" };
+const state = {};   // id -> { status: "accepted" | "rejected", reason }
+let selected = 1;
+
+const $ = id => document.getElementById(id);
+
+function renderList() {
+  $("list").innerHTML = visits.map(v => {
+    const s = state[v.id];
+    const pill = s ? (s.status === "accepted" ? '<span class="pill p-ok">Accepted</span>' : '<span class="pill p-no">Rejected</span>')
+                   : `<span class="pill ${pillClass[v.urgency]}">${v.label}</span>`;
+    return `<button class="item ${v.id === selected ? "on" : ""} ${s ? "done" : ""}" data-id="${v.id}">
+      <div class="bar" style="background:${colorVar[v.urgency]}"></div>
+      <div><div class="t">${v.name}</div><div class="s">${v.city} · ${v.short}</div></div>${pill}</button>`;
+  }).join("");
+}
+
+function renderDetail() {
+  const v = visits.find(x => x.id === selected);
+  const s = state[v.id];
+  const ev = v.evidence.map(e => `
+    <div class="evc"><div class="k">${e.k}</div>
+      <div class="v">${e.v}${e.trend ? ` <span style="font-size:13px;color:var(--green)">${e.trend}</span>` : ""}</div>
+      ${e.spark ? `<svg viewBox="0 0 120 26" width="100%" height="26"><polyline fill="none" stroke="#0099ff" stroke-width="2" points="${e.spark}"/></svg>`
+                : `<div class="meter"><i style="width:${e.meter}%;background:${colorVar[e.color]}"></i></div>`}
+      <div class="chk">✓ ${e.check}</div></div>`).join("");
+
+  let footer;
+  if (!s) {
+    footer = `<div class="actions">
+      <button class="btn primary" id="acceptBtn">Accept visit</button>
+      <button class="btn ghost" id="rejectBtn">Reject and give reason</button>
+      <button class="link" id="agentBtn">What the agent does →</button></div>
+      <p class="note" style="margin-top:10px">Nothing happens until you accept. Rejections are logged so we can measure how often the agent is wrong.</p>`;
+  } else if (s.status === "accepted") {
+    footer = `<div class="status" style="background:#e3f6ee;color:#16784f">✓ Accepted: booked for ${v.when}, parts reserved, message drafted for ${v.contact}.</div>`;
+  } else {
+    footer = `<div class="status" style="background:#eceef1;color:#545d6b">Rejected: “${s.reason}”. Logged so the agent can be checked and improved.</div>`;
+  }
+
+  $("detail").innerHTML = `
+    <div class="dh"><div><h3>${v.name}</h3><p>${v.city} · ${v.meta}</p></div>
+      <span class="pill ${pillClass[v.urgency]}">${v.label} · ${v.when}</span></div>
+    <div class="box"><div class="lab">Why the agent suggests this</div><p>${v.why}</p></div>
+    <div class="ev">${ev}</div>
+    <div class="box" style="background:#fff;border:1px solid var(--line)"><div class="lab">Bring</div>
+      <div class="tags">${v.bring.map(b => `<span class="tag">${b}</span>`).join("")}</div></div>
+    ${footer}`;
+
+  if (!s) {
+    $("acceptBtn").onclick = () => openAccept(v);
+    $("rejectBtn").onclick = () => openReject(v);
+    $("agentBtn").onclick = () => openAgent(v);
+  }
+}
+
+function renderStats() {
+  const done = Object.values(state);
+  const accepted = done.filter(s => s.status === "accepted").length;
+  $("statReviewed").textContent = `${done.length} / ${visits.length}`;
+  $("statAgree").textContent = done.length ? `${Math.round(accepted / done.length * 100)}%` : "–";
+}
+
+function render() { renderList(); renderDetail(); renderStats(); }
+
+// ---- pop-ups ----
+let lastFocus;
+function openModal(html) {
+  lastFocus = document.activeElement;
+  $("modal").innerHTML = `<button class="x" aria-label="Close">✕</button>${html}`;
+  $("modal").querySelector(".x").onclick = closeModal;
+  $("overlay").classList.add("open");
+  $("modal").querySelector(".x").focus();
+}
+function closeModal() {
+  $("overlay").classList.remove("open");
+  if (lastFocus) lastFocus.focus();
+}
+$("overlay").onclick = e => { if (e.target.id === "overlay") closeModal(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+function openAgent(v) {
+  openModal(`
+    <h3>What the agent does</h3>
+    <p class="sub">${v.name}, ${v.city}</p>
+    <ol class="steps">
+      <li><span class="num">1</span><div><h4>Notices</h4><p>${v.noticed}</p></div></li>
+      <li><span class="num">2</span><div><h4>Checks</h4><ul>${v.checked.map(c => `<li>${c}</li>`).join("")}</ul></div></li>
+      <li><span class="num">3</span><div><h4>Decides, and shows what it ruled out</h4><p>${v.decided}</p></div></li>
+      <li><span class="num">4</span><div><h4>Waits for a person</h4><p>It suggests the visit to Sam and does nothing until it's accepted or rejected.</p></div></li>
+      <li><span class="num">5</span><div><h4>If accepted, it does the busywork</h4><ul>${v.willDo.map(c => `<li>${c}</li>`).join("")}</ul></div></li>
+    </ol>
+    <div class="guard"><b>What it never does on its own:</b> send messages to customers, change contracts or invoices, or cancel visits a person has booked. These always need a human to approve them.</div>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn primary" id="mAccept">Accept visit</button>
+      <button class="btn ghost" id="mReject">Reject</button></div>`);
+  $("mAccept").onclick = () => openAccept(v);
+  $("mReject").onclick = () => openReject(v);
+}
+
+function openAccept(v) {
+  openModal(`
+    <h3>Visit accepted</h3>
+    <p class="sub">The agent is doing the follow-up work (simulated)</p>
+    <ul class="todo">${v.willDo.map((t, i) => `<li><span class="tick" data-i="${i}">✓</span><span>${t}</span></li>`).join("")}</ul>
+    <div class="lab">Draft message to ${v.contact}: waiting for you to send it</div>
+    <div class="mail">${v.mail}</div>
+    <div class="actions"><button class="btn primary" id="mDone">Looks good</button>
+      <span class="note">The agent drafts it, a person sends it.</span></div>`);
+  document.querySelectorAll(".tick").forEach(t => setTimeout(() => t.classList.add("on"), 350 * (+t.dataset.i + 1)));
+  state[v.id] = { status: "accepted" };
+  render();
+  $("mDone").onclick = closeModal;
+}
+
+function openReject(v) {
+  const reasons = ["Already visited or fixed", "The data looks wrong", "Not urgent, can wait", "Customer asked for a different time"];
+  openModal(`
+    <h3>Why are you rejecting this?</h3>
+    <p class="sub">${v.name}, ${v.city}. Your answer helps us see where the agent gets it wrong.</p>
+    <div class="reasons">${reasons.map((r, i) => `<label><input type="radio" name="r" value="${r}" ${i === 0 ? "checked" : ""}> ${r}</label>`).join("")}</div>
+    <textarea id="rNote" placeholder="Anything else? (optional)"></textarea>
+    <div class="actions"><button class="btn primary" id="mSubmit">Reject visit</button>
+      <button class="btn ghost" id="mCancel">Cancel</button></div>`);
+  $("mCancel").onclick = closeModal;
+  $("mSubmit").onclick = () => {
+    const reason = document.querySelector('input[name="r"]:checked').value;
+    const note = $("rNote").value.trim();
+    state[v.id] = { status: "rejected", reason: note ? `${reason}: ${note}` : reason };
+    closeModal();
+    render();
+  };
+}
+
+$("aboutBtn").onclick = () => openModal(`
+  <h3>About this concept</h3>
+  <p class="sub">A job application prototype by Laura Phillips</p>
+  <div class="box"><p>Service Planner is an idea for a feature in AURA. A planning agent reads live tap data (filter life, flavour levels, CO₂, error codes) and suggests which sites a technician should visit this week, and why.</p></div>
+  <div class="box"><p><b>Why this feature first:</b> technician time is expensive, and empty filters or flavours are the kind of thing customers notice. Visits are easy to measure: driving time, emergency call-outs, and how often technicians agree with the agent.</p></div>
+  <div class="box"><p><b>Built so a person can check the AI:</b> every suggestion shows the data behind it, and every rejection is logged. This comes from my MSc thesis, where I found that an AI's explanations can sound reasonable while hiding what is really driving its decisions.</p></div>
+  <p class="note">All data is made up. The Service Planner suggestions are pre-written. "Try the agent" runs real decision rules in your browser, but no live AI model. Not affiliated with or endorsed by Aquablu.</p>`);
+
+// ---- menu ----
+document.querySelectorAll("nav button[data-view]").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button[data-view]").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + b.dataset.view));
+  window.scrollTo(0, 0);
+});
+
+// ---- try the agent ----
+// Rough capacity assumptions for the made-up tap
+const FILTER_LITRES = 27000, FLAVOUR_LITRES = 6000, CO2_LITRES = 4000;
+const FLAVOUR_SHARE = 0.4, SPARKLING_SHARE = 0.4;
+
+const presets = {
+  urgent:  { filter: 3,  litres: 410, flavour: 40, co2: 60, errors: 0, nearby: false },
+  errors:  { filter: 60, litres: 180, flavour: 50, co2: 45, errors: 3, nearby: false },
+  combine: { filter: 70, litres: 140, flavour: 12, co2: 80, errors: 0, nearby: true },
+  fine:    { filter: 80, litres: 200, flavour: 75, co2: 70, errors: 0, nearby: false }
+};
+
+function setInputs(p) {
+  $("sFilter").value = p.filter; $("sLitres").value = p.litres; $("sFlavour").value = p.flavour;
+  $("sCo2").value = p.co2; $("sErrors").value = p.errors; $("sNearby").checked = p.nearby;
+  runAgent();
+}
+
+function runAgent() {
+  const filter = +$("sFilter").value, litres = +$("sLitres").value, flavour = +$("sFlavour").value;
+  const co2 = +$("sCo2").value, errors = +$("sErrors").value, nearby = $("sNearby").checked;
+  $("oFilter").textContent = filter + "%"; $("oLitres").textContent = litres + " L";
+  $("oFlavour").textContent = flavour + "%"; $("oCo2").textContent = co2 + "%"; $("oErrors").textContent = errors;
+
+  const days = {
+    filter: Math.round(filter / 100 * FILTER_LITRES / litres),
+    flavour: Math.round(flavour / 100 * FLAVOUR_LITRES / (litres * FLAVOUR_SHARE)),
+    co2: Math.round(co2 / 100 * CO2_LITRES / (litres * SPARKLING_SHARE))
+  };
+  const names = { filter: "the filter", flavour: "the flavour", co2: "the CO₂ cylinder" };
+  const first = Object.keys(days).reduce((a, b) => days[a] <= days[b] ? a : b);
+  const minDays = days[first];
+
+  const rules = [
+    { id: "urgent-empty", text: "Something runs out within 3 days → <b>urgent</b>", fired: minDays <= 3 },
+    { id: "urgent-errors", text: "4 or more error alerts in 48h → <b>urgent</b>", fired: errors >= 4 },
+    { id: "week-empty", text: "Something runs out within 7 days → <b>this week</b>", fired: minDays > 3 && minDays <= 7 },
+    { id: "week-errors", text: "2–3 error alerts in 48h → <b>this week</b>", fired: errors >= 2 && errors < 4 },
+    { id: "combine", text: "Runs out within 14 days and a technician is nearby → <b>combine</b>", fired: minDays > 7 && minDays <= 14 && nearby },
+    { id: "plan", text: "Runs out within 14 days, no one nearby → <b>plan next week</b>", fired: minDays > 7 && minDays <= 14 && !nearby },
+    { id: "single-error", text: "1 error alert → <b>watch</b>, no visit on its own", fired: errors === 1 }
+  ];
+  const on = id => rules.find(r => r.id === id).fired;
+
+  let level, title, when, why, ruled;
+  const runOut = `${names[first]} runs out in about ${minDays} day${minDays === 1 ? "" : "s"}`;
+  if (on("urgent-empty") || on("urgent-errors")) {
+    level = "v-red"; title = "Urgent visit"; when = "Within 1–2 days";
+    why = on("urgent-empty") ? `At ${litres} litres a day, ${runOut}.` : `The tap sent ${errors} error alerts in 48 hours, which usually means a part is about to fail.`;
+    ruled = "Waiting for the next planned route, because the customer would be left without working water first.";
+  } else if (on("week-empty") || on("week-errors")) {
+    level = "v-or"; title = "Visit this week"; when = nearby ? "Add to this week's nearby route" : "Book a slot this week";
+    why = on("week-errors") ? `The tap sent ${errors} error alerts in 48 hours. It still works, but repeat errors are an early warning.` : `At ${litres} litres a day, ${runOut}.`;
+    ruled = "An urgent call-out, because there's still time to plan it properly. Also ruled out waiting until next week, because it would run out first.";
+  } else if (on("combine")) {
+    level = "v-ye"; title = "Combine with nearby trip"; when = "Same day as the nearby visit";
+    why = `${runOut[0].toUpperCase() + runOut.slice(1)}. That's not urgent, but a technician is in the area anyway, so a short stop now saves a separate trip later.`;
+    ruled = "A separate trip next week, which would add driving for a 10-minute job.";
+  } else if (on("plan")) {
+    level = "v-bl"; title = "Plan for next week"; when = "Next week";
+    why = `${runOut[0].toUpperCase() + runOut.slice(1)}. There's time to fit it into next week's route.`;
+    ruled = "Visiting this week, because no one is nearby and it isn't urgent yet.";
+  } else {
+    level = "v-gr"; title = "No visit needed"; when = `Check again tomorrow`;
+    why = `Everything lasts at least 2 more weeks (the first thing to run out is ${names[first]}, in about ${minDays} days).` + (errors === 1 ? " One error alert was logged. The agent will keep watching it, but one alert alone isn't worth a trip." : "");
+    ruled = "Visiting now, because it would be a wasted trip.";
+  }
+
+  $("verdict").className = "verdict " + level;
+  $("verdict").innerHTML = `<div class="lab" style="color:inherit;opacity:.7">Agent decision</div><div class="big">${title}</div><div>${when}</div>`;
+
+  const sig = [
+    { k: "Filter lasts", v: days.filter + " days", hot: first === "filter" && minDays <= 14 },
+    { k: "Flavour lasts", v: days.flavour + " days", hot: first === "flavour" && minDays <= 14 },
+    { k: "CO₂ lasts", v: days.co2 + " days", hot: first === "co2" && minDays <= 14 },
+    { k: "Error alerts", v: errors, hot: errors >= 2 }
+  ];
+  $("signals").innerHTML = sig.map(s => `<div class="evc ${s.hot ? "hot" : ""}"><div class="k">${s.k}</div><div class="v">${s.v}</div></div>`).join("");
+
+  $("simWhy").textContent = why;
+  $("simRuled").textContent = ruled;
+
+  const bring = [];
+  if (title !== "No visit needed") {
+    if (days.filter <= 21) bring.push("Filter cartridge");
+    if (days.flavour <= 21) bring.push("Flavour pods");
+    if (days.co2 <= 21) bring.push("CO₂ cylinder");
+    if (errors >= 2) bring.push("Diagnostic kit");
+  }
+  $("simBring").innerHTML = (bring.length ? bring : ["Nothing"]).map(b => `<span class="tag">${b}</span>`).join("");
+
+  $("simRules").innerHTML = rules.map(r => `<li class="${r.fired ? "" : "off"}">${r.fired ? "✓" : "–"} <span>${r.text}</span></li>`).join("")
+    + `<li class="off">ℹ Days left = level × capacity ÷ daily use (filter ${FILTER_LITRES.toLocaleString()} L, flavour ${FLAVOUR_LITRES.toLocaleString()} L, CO₂ ${CO2_LITRES.toLocaleString()} L)</li>`;
+}
+
+["sFilter", "sLitres", "sFlavour", "sCo2", "sErrors", "sNearby"].forEach(id => $(id).addEventListener("input", runAgent));
+document.querySelectorAll("[data-preset]").forEach(b => b.onclick = () => setInputs(presets[b.dataset.preset]));
+setInputs(presets.urgent);
+
+$("list").onclick = e => {
+  const btn = e.target.closest(".item");
+  if (!btn) return;
+  selected = +btn.dataset.id;
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
